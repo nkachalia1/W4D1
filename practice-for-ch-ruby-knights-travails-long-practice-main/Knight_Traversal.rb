@@ -1,7 +1,7 @@
 require_relative 'searchable.rb'
 
 class KnightPathFinder
-  
+
 
     def self.new_move_positions(pos)
         current_row, current_col = pos
@@ -16,12 +16,12 @@ class KnightPathFinder
             end
         end
 
-        new_pos.reject! { |el| el.any? { |i| i < 1 || i > 8 } }
-  
+        new_pos.reject! { |el| el.any? { |i| i < 0 || i > 7 } }
+
 
         return new_pos
-    end 
-    
+    end
+
     attr_reader :considered_positions
 
     def initialize(starting_position)
@@ -31,10 +31,10 @@ class KnightPathFinder
         @considered_positions = [starting_position]
         self.make_tree
     end
-   
+
 
     def make_tree
-        until @queue.empty? 
+        until @queue.empty?
             head = @queue.shift
             current_position = head.value
             new_pos = KnightPathFinder.new_move_positions(current_position)
@@ -46,9 +46,22 @@ class KnightPathFinder
                 child_node = PolyTreeNode.new(el)
                 head.add_child(child_node)
                 @queue << child_node
-            end 
-        end 
-    end 
+            end
+        end
+    end
 
+    def find_path(end_pos)
+        end_node = @root_node.bfs(end_pos)
+        # trace_path_back(end_node)
+    end
+
+    def trace_path_back(node)
+        final = []
+        until node != nil
+            final.unshift(node.value)
+            node = node.parent
+        end
+
+        final
+    end
 end
-
